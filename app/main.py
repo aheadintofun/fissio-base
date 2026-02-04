@@ -9,10 +9,10 @@ import os
 app = FastAPI(title="Fissio Base", description="Central Analytics & Dashboard Platform")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Templates
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
 
 # Service URLs (can be overridden by environment)
 JUPYTER_URL = os.getenv("JUPYTER_URL", "http://localhost:8888")
