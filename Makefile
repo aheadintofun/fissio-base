@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs status clean reset jupyter superset duckdb frontend build
+.PHONY: help up down restart logs status clean reset jupyter superset duckdb frontend build seed
 
 help:
 	@echo "Fissio Base - Central Analytics & Embeddable Dashboards"
@@ -12,6 +12,7 @@ help:
 	@echo "  make clean     Stop and remove volumes"
 	@echo "  make reset     Full reset (removes all data)"
 	@echo "  make build     Rebuild frontend image"
+	@echo "  make seed      Seed DuckDB with power industry data"
 	@echo ""
 	@echo "Individual services:"
 	@echo "  make frontend  Start only Frontend"
@@ -78,3 +79,10 @@ superset:
 duckdb:
 	docker compose up -d duckdb-ui
 	@echo "DuckDB UI: http://localhost:5522"
+
+seed:
+	@echo "Seeding DuckDB with power industry data..."
+	@if [ ! -d ".venv" ]; then python3 -m venv .venv && .venv/bin/pip install duckdb; fi
+	.venv/bin/python scripts/seed_data.py
+	@echo ""
+	@echo "Data seeded! Open DuckDB UI to explore: http://localhost:5522"

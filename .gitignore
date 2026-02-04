@@ -5,6 +5,7 @@
 data/*.duckdb
 data/*.parquet
 data/*.csv
+data/*.txt
 !data/.gitkeep
 
 # Superset
