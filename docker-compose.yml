@@ -1,0 +1,48 @@
+services:
+  jupyter:
+    image: quay.io/jupyter/scipy-notebook:latest
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+      - ./data:/home/jovyan/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=fissio
+    command: start-notebook.sh --NotebookApp.token='fissio'
+
+  superset:
+    image: apache/superset:latest
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./superset:/app/superset_home
+      - ./data:/app/data
+    environment:
+      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-fissio_secret_key_change_me}
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@fissio.com
+      - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
+    depends_on:
+      - superset-init
+
+  superset-init:
+    image: apache/superset:latest
+    volumes:
+      - ./superset:/app/superset_home
+      - ./data:/app/data
+    environment:
+      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-fissio_secret_key_change_me}
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@fissio.com
+      - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
+    command: >
+      bash -c "
+        superset db upgrade &&
+        superset fab create-admin --username admin --firstname Admin --lastname User --email admin@fissio.com --password $${ADMIN_PASSWORD:-admin} || true &&
+        superset init
+      "
+    restart: "no"
+
+volumes:
+  superset_home:

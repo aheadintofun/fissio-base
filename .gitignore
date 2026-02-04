@@ -1,0 +1,24 @@
+# Environment
+.env
+
+# Data files (keep structure, ignore content)
+data/*.duckdb
+data/*.parquet
+data/*.csv
+!data/.gitkeep
+
+# Superset
+superset/superset.db
+superset/*.sqlite
+
+# Jupyter
+notebooks/.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS
+.DS_Store
