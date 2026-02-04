@@ -1,7 +1,7 @@
 .PHONY: help up down restart logs status clean reset jupyter superset
 
 help:
-	@echo "Fissio Data - Nuclear Industry Analytics Platform"
+	@echo "Fissio Base - Central Analytics & Embeddable Dashboards"
 	@echo ""
 	@echo "Commands:"
 	@echo "  make up        Start all services (Jupyter + Superset)"
@@ -19,15 +19,22 @@ help:
 	@echo "Access:"
 	@echo "  Jupyter:  http://localhost:8888 (token: fissio)"
 	@echo "  Superset: http://localhost:8088 (admin/admin)"
+	@echo ""
+	@echo "Embedding:"
+	@echo "  Dashboard: http://localhost:8088/superset/dashboard/<id>/?standalone=true"
+	@echo "  Chart:     http://localhost:8088/superset/explore/?standalone=true&slice_id=<id>"
 
 up:
 	docker compose up -d
 	@echo ""
-	@echo "Fissio Data starting..."
+	@echo "Fissio Base starting..."
 	@echo ""
 	@echo "Access:"
 	@echo "  Jupyter:  http://localhost:8888 (token: fissio)"
 	@echo "  Superset: http://localhost:8088 (admin/admin)"
+	@echo ""
+	@echo "Embed dashboards in other Fissio apps:"
+	@echo "  <iframe src=\"http://localhost:8088/superset/dashboard/1/?standalone=true\"></iframe>"
 	@echo ""
 	@echo "Run 'make logs' to follow startup progress"
 

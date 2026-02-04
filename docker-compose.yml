@@ -18,11 +18,14 @@ services:
     volumes:
       - ./superset:/app/superset_home
       - ./data:/app/data
+      - ./superset_config.py:/app/pythonpath/superset_config.py
     environment:
       - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-fissio_secret_key_change_me}
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@fissio.com
       - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
+      # Enable embedding
+      - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
     depends_on:
       - superset-init
 
@@ -31,11 +34,13 @@ services:
     volumes:
       - ./superset:/app/superset_home
       - ./data:/app/data
+      - ./superset_config.py:/app/pythonpath/superset_config.py
     environment:
       - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-fissio_secret_key_change_me}
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@fissio.com
       - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
+      - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
     command: >
       bash -c "
         superset db upgrade &&

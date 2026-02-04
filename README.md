@@ -1,12 +1,12 @@
-# Fissio Data
+# Fissio Base
 
-Nuclear industry analytics platform with DuckDB, Jupyter, and Superset.
+Central analytics and dashboard platform for the Fissio suite. Provides embeddable dashboards and data analysis capabilities across all Fissio apps.
 
 Part of the **Fissio Platform** for nuclear site development:
 - **fissio-site** (port 8000) - Site selection & CAD designer
 - **fissio-docs** (port 8001/3000) - Document intelligence & RAG
 - **fissio-crmi** (port 3001) - CRM for nuclear operations
-- **fissio-data** (port 8888/8088) - Analytics & dashboards ← *this repo*
+- **fissio-base** (port 8888/8088) - Analytics & embeddable dashboards ← *this repo*
 
 ## Quick Start
 
@@ -22,27 +22,86 @@ open http://localhost:8088   # Superset (admin/admin)
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│              Docker Compose                      │
-├─────────────────────────┬───────────────────────┤
-│       jupyter           │       superset        │
-│   (scipy-notebook)      │   (apache/superset)   │
-│      port 8888          │      port 8088        │
-├─────────────────────────┴───────────────────────┤
-│                    ./data                        │
-│         (DuckDB + Parquet + CSV files)          │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                         Fissio Platform                              │
+├─────────────┬─────────────┬─────────────┬──────────────────────────┤
+│ fissio-site │ fissio-docs │ fissio-crmi │      fissio.com          │
+│   :8000     │  :8001/3000 │    :3001    │     (production)         │
+├─────────────┴─────────────┴─────────────┴──────────────────────────┤
+│                    ↑ Embedded Dashboards ↑                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                        fissio-base                                   │
+│  ┌─────────────────────────┬───────────────────────────────────┐   │
+│  │       jupyter           │           superset                 │   │
+│  │   (scipy-notebook)      │     (apache/superset)             │   │
+│  │      port 8888          │        port 8088                  │   │
+│  │                         │   • Embeddable charts             │   │
+│  │   Data exploration      │   • Public dashboards             │   │
+│  │   Analysis prototyping  │   • CORS enabled                  │   │
+│  ├─────────────────────────┴───────────────────────────────────┤   │
+│  │                        ./data                                │   │
+│  │              (DuckDB + Parquet + CSV files)                 │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
 ```
+
+## Embedding Dashboards
+
+Superset is configured to allow embedding dashboards and charts into other Fissio apps via iframe.
+
+### Step 1: Create a Dashboard in Superset
+
+1. Open Superset at http://localhost:8088
+2. Create charts and dashboards from your data
+3. Go to Dashboard → Edit → Settings → Enable "Publish"
+
+### Step 2: Get the Embed URL
+
+For a dashboard:
+```
+http://localhost:8088/superset/dashboard/<dashboard_id>/?standalone=true
+```
+
+For a single chart:
+```
+http://localhost:8088/superset/explore/?standalone=true&slice_id=<chart_id>
+```
+
+### Step 3: Embed in Fissio Apps
+
+**In fissio-site (Jinja2 template):**
+```html
+<iframe
+  src="http://localhost:8088/superset/dashboard/1/?standalone=true"
+  width="100%"
+  height="600"
+  frameborder="0">
+</iframe>
+```
+
+**In fissio-docs (Next.js):**
+```jsx
+<iframe
+  src="http://localhost:8088/superset/dashboard/1/?standalone=true"
+  className="w-full h-[600px] border-0"
+/>
+```
+
+**In fissio-crmi (Twenty CRM):**
+Custom objects can link to dashboard URLs, or use webhooks to trigger data updates.
+
+### CORS Configuration
+
+The following origins are allowed for embedding:
+- `http://localhost:8000` (fissio-site)
+- `http://localhost:3000` (fissio-docs UI)
+- `http://localhost:3001` (fissio-crmi)
+- `https://fissio.com` (production)
+- `https://*.fissio.com` (subdomains)
+
+Edit `superset_config.py` to add more origins.
 
 ## Data Architecture
-
-```
-data/
-├── fissio.duckdb          # Main analytical database
-├── plants_facilities.parquet
-├── regulatory_inspections.parquet
-└── market_prices.parquet
-```
 
 ### DuckDB Schemas
 
@@ -52,11 +111,15 @@ data/
 | `regulatory` | NRC inspections, violations, enforcement |
 | `market` | Electricity prices, capacity markets |
 
-## Workflow
+### File Organization
 
-1. **Explore in Jupyter** - Load data, run analysis, prototype visualizations
-2. **Export to Parquet** - Save insights as parquet files
-3. **Dashboard in Superset** - Build interactive dashboards from validated analyses
+```
+data/
+├── fissio.duckdb              # Main analytical database
+├── plants_facilities.parquet   # Exported for dashboards
+├── regulatory_inspections.parquet
+└── market_prices.parquet
+```
 
 ## Commands
 
@@ -70,17 +133,19 @@ make clean     # Stop and remove volumes
 make reset     # Full reset (removes all data)
 ```
 
+## Workflow
+
+1. **Explore in Jupyter** - Load data, run analysis, prototype visualizations
+2. **Build in Superset** - Create production dashboards and charts
+3. **Embed everywhere** - Add dashboards to fissio-site, fissio-docs, fissio-crmi, or fissio.com
+
 ## Connecting Superset to DuckDB
 
 1. Open Superset at http://localhost:8088
-2. Go to Settings → Database Connections → + Database
+2. Settings → Database Connections → + Database
 3. Select "Other" and use SQLAlchemy URI:
    ```
    duckdb:////app/data/fissio.duckdb
-   ```
-4. Or query parquet files directly:
-   ```sql
-   SELECT * FROM read_parquet('/app/data/plants_facilities.parquet')
    ```
 
 ## Sample Notebooks
@@ -91,8 +156,6 @@ make reset     # Full reset (removes all data)
 
 ## Nuclear Industry Data Sources
 
-Potential data to integrate:
-
 | Source | Data Type | URL |
 |--------|-----------|-----|
 | NRC | Plant status, inspections | https://www.nrc.gov/reading-rm/doc-collections/ |
@@ -100,9 +163,7 @@ Potential data to integrate:
 | IAEA | Global reactor database | https://pris.iaea.org/PRIS/ |
 | PJM/ERCOT | Market prices | Various ISO websites |
 
-## Fissio Platform Integration
-
-### Running the Full Platform
+## Running the Full Platform
 
 ```bash
 # Terminal 1: Site selection app
@@ -114,8 +175,8 @@ cd ~/fissio-docs && docker compose up
 # Terminal 3: CRM
 cd ~/fissio-crmi && make up
 
-# Terminal 4: Analytics
-cd ~/fissio-data && make up
+# Terminal 4: Analytics & Dashboards
+cd ~/fissio-base && make up
 ```
 
 ### Port Summary
@@ -126,16 +187,25 @@ cd ~/fissio-data && make up
 | fissio-docs API | 8001 | http://localhost:8001 |
 | fissio-docs UI | 3000 | http://localhost:3000 |
 | fissio-crmi | 3001 | http://localhost:3001 |
-| fissio-data Jupyter | 8888 | http://localhost:8888 |
-| fissio-data Superset | 8088 | http://localhost:8088 |
+| fissio-base Jupyter | 8888 | http://localhost:8888 |
+| fissio-base Superset | 8088 | http://localhost:8088 |
 
 ## Tech Stack
 
 - **Database**: DuckDB (analytical SQL)
 - **Notebooks**: Jupyter Lab (scipy-notebook)
-- **Dashboards**: Apache Superset
+- **Dashboards**: Apache Superset (with embedding enabled)
 - **File Format**: Parquet (columnar, compressed)
 - **Container**: Docker Compose
+
+## Production Deployment
+
+For production, update `superset_config.py`:
+
+1. Set `TALISMAN_ENABLED = True`
+2. Configure proper CSP headers for your domains
+3. Generate a strong `SUPERSET_SECRET_KEY`
+4. Enable HTTPS on all services
 
 ## License
 
