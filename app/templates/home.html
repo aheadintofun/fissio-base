@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Fissio Base - Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <header class="dashboard-header">
+        <h1>Analytics Platform</h1>
+        <p>Central hub for data exploration, visualization, and embeddable dashboards</p>
+    </header>
+
+    <div class="service-cards">
+        <a href="/jupyter" class="service-card">
+            <div class="card-icon jupyter">
+                <i class="ti ti-notebook"></i>
+            </div>
+            <div class="card-content">
+                <h2>Jupyter Lab</h2>
+                <p>Interactive notebooks for data exploration, analysis, and prototyping</p>
+                <div class="card-meta">
+                    <span class="port">:8888</span>
+                    <span class="token">token: fissio</span>
+                </div>
+            </div>
+            <div class="card-arrow">
+                <i class="ti ti-chevron-right"></i>
+            </div>
+        </a>
+
+        <a href="/superset" class="service-card">
+            <div class="card-icon superset">
+                <i class="ti ti-chart-bar"></i>
+            </div>
+            <div class="card-content">
+                <h2>Apache Superset</h2>
+                <p>Production dashboards with embeddable charts for all Fissio apps</p>
+                <div class="card-meta">
+                    <span class="port">:8088</span>
+                    <span class="token">admin/admin</span>
+                </div>
+            </div>
+            <div class="card-arrow">
+                <i class="ti ti-chevron-right"></i>
+            </div>
+        </a>
+
+        <a href="/duckdb" class="service-card">
+            <div class="card-icon duckdb">
+                <i class="ti ti-database"></i>
+            </div>
+            <div class="card-content">
+                <h2>DuckDB UI</h2>
+                <p>SQL editor and data browser for the analytical database</p>
+                <div class="card-meta">
+                    <span class="port">:5522</span>
+                    <span class="token">fissio.duckdb</span>
+                </div>
+            </div>
+            <div class="card-arrow">
+                <i class="ti ti-chevron-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <section class="info-section">
+        <h2>Data Architecture</h2>
+        <div class="schema-cards">
+            <div class="schema-card">
+                <i class="ti ti-building-factory-2"></i>
+                <h3>plants</h3>
+                <p>Power plant facilities, equipment, outages</p>
+            </div>
+            <div class="schema-card">
+                <i class="ti ti-gavel"></i>
+                <h3>regulatory</h3>
+                <p>NRC inspections, violations, enforcement</p>
+            </div>
+            <div class="schema-card">
+                <i class="ti ti-trending-up"></i>
+                <h3>market</h3>
+                <p>Electricity prices, capacity markets</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <h2>Embedding Dashboards</h2>
+        <div class="embed-info">
+            <p>Superset dashboards can be embedded in any Fissio app:</p>
+            <pre><code>&lt;iframe src="{{ superset_url }}/superset/dashboard/1/?standalone=true"&gt;&lt;/iframe&gt;</code></pre>
+            <div class="embed-targets">
+                <span><i class="ti ti-map"></i> fissio-site</span>
+                <span><i class="ti ti-file-text"></i> fissio-docs</span>
+                <span><i class="ti ti-users"></i> fissio-crmi</span>
+                <span><i class="ti ti-world"></i> fissio.com</span>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

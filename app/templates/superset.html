@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Apache Superset - Fissio Base{% endblock %}
+
+{% block content %}
+<div class="embedded-view">
+    <div class="embedded-header">
+        <div class="embedded-title">
+            <i class="ti ti-chart-bar"></i>
+            <h1>Apache Superset</h1>
+        </div>
+        <div class="embedded-actions">
+            <a href="{{ superset_url }}" target="_blank" class="btn btn-secondary">
+                <i class="ti ti-external-link"></i>
+                Open in New Tab
+            </a>
+        </div>
+    </div>
+    <iframe
+        src="{{ superset_url }}"
+        class="embedded-frame">
+    </iframe>
+</div>
+{% endblock %}

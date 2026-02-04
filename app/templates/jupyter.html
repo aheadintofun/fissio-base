@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Jupyter Lab - Fissio Base{% endblock %}
+
+{% block content %}
+<div class="embedded-view">
+    <div class="embedded-header">
+        <div class="embedded-title">
+            <i class="ti ti-notebook"></i>
+            <h1>Jupyter Lab</h1>
+        </div>
+        <div class="embedded-actions">
+            <a href="{{ jupyter_url }}" target="_blank" class="btn btn-secondary">
+                <i class="ti ti-external-link"></i>
+                Open in New Tab
+            </a>
+        </div>
+    </div>
+    <iframe
+        src="{{ jupyter_url }}/lab?token=fissio"
+        class="embedded-frame"
+        allow="clipboard-read; clipboard-write">
+    </iframe>
+</div>
+{% endblock %}

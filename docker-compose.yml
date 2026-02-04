@@ -1,4 +1,19 @@
 services:
+  # Fissio Base Frontend - unified dashboard
+  frontend:
+    build: ./app
+    ports:
+      - "8080:8080"
+    environment:
+      - JUPYTER_URL=http://localhost:8888
+      - SUPERSET_URL=http://localhost:8088
+      - DUCKDB_URL=http://localhost:5522
+    depends_on:
+      - jupyter
+      - superset
+      - duckdb-ui
+
+  # Jupyter Lab - notebooks and exploration
   jupyter:
     image: quay.io/jupyter/scipy-notebook:latest
     ports:
@@ -11,6 +26,7 @@ services:
       - JUPYTER_TOKEN=fissio
     command: start-notebook.sh --NotebookApp.token='fissio'
 
+  # Apache Superset - dashboards and visualizations
   superset:
     image: apache/superset:latest
     ports:
@@ -24,7 +40,6 @@ services:
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@fissio.com
       - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
-      # Enable embedding
       - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
     depends_on:
       - superset-init
@@ -48,6 +63,16 @@ services:
         superset init
       "
     restart: "no"
+
+  # Duck-UI - DuckDB web interface
+  duckdb-ui:
+    image: ghcr.io/ibero-data/duck-ui:latest
+    ports:
+      - "5522:5522"
+    volumes:
+      - ./data:/data
+    environment:
+      - DUCKDB_DATABASE=/data/fissio.duckdb
 
 volumes:
   superset_home:

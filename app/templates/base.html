@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fissio Base{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23000'/><polygon points='50,20 75,70 25,70' fill='%23fff'/></svg>">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/">
+                <svg width="28" height="28" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#000" stroke="#00d492" stroke-width="3"/>
+                    <polygon points="50,20 75,70 25,70" fill="#00d492"/>
+                </svg>
+                <span>Fissio Base</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">
+                <i class="ti ti-layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/jupyter" class="{% if request.url.path == '/jupyter' %}active{% endif %}">
+                <i class="ti ti-notebook"></i>
+                <span>Jupyter</span>
+            </a>
+            <a href="/superset" class="{% if request.url.path == '/superset' %}active{% endif %}">
+                <i class="ti ti-chart-bar"></i>
+                <span>Superset</span>
+            </a>
+            <a href="/duckdb" class="{% if request.url.path == '/duckdb' %}active{% endif %}">
+                <i class="ti ti-database"></i>
+                <span>DuckDB</span>
+            </a>
+        </div>
+        <div class="nav-external">
+            <a href="{{ jupyter_url }}" target="_blank" title="Open Jupyter in new tab">
+                <i class="ti ti-external-link"></i>
+            </a>
+            <a href="{{ superset_url }}" target="_blank" title="Open Superset in new tab">
+                <i class="ti ti-external-link"></i>
+            </a>
+            <a href="{{ duckdb_url }}" target="_blank" title="Open DuckDB in new tab">
+                <i class="ti ti-external-link"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
