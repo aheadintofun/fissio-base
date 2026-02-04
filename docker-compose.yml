@@ -24,7 +24,7 @@ services:
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - JUPYTER_TOKEN=fissio
-    command: start-notebook.sh --NotebookApp.token='fissio'
+    command: bash -c "pip install duckdb && start-notebook.sh --NotebookApp.token='fissio'"
 
   # Apache Superset - dashboards and visualizations
   superset:
