@@ -51,7 +51,7 @@ open http://localhost:8080
 | **Frontend** | 8080 | Unified dashboard with Fissio styling | - |
 | **Jupyter** | 8888 | Interactive notebooks | token: `fissio` |
 | **Superset** | 8088 | Dashboards & visualizations | admin/admin |
-| **DuckDB UI** | 5522 | SQL editor & data browser | - |
+| **DuckDB UI** | 5522 | SQL editor (import Parquet via UI) | - |
 
 ## Features
 
@@ -132,10 +132,16 @@ http://localhost:8088/superset/explore/?standalone=true&slice_id=<id>
 
 ## Workflow
 
-1. **Query in DuckDB UI** - Explore data with SQL, test queries
-2. **Analyze in Jupyter** - Load data, run analysis, prototype visualizations
-3. **Build in Superset** - Create production dashboards and charts
-4. **Embed everywhere** - Add dashboards to fissio-site, fissio-docs, fissio-crmi, or fissio.com
+1. **Seed the database** - Run `make seed` to populate DuckDB with power industry data
+2. **Query in Jupyter** - Primary interface for querying the seeded DuckDB database
+3. **Explore in DuckDB UI** - Import Parquet files via UI for ad-hoc SQL (WebAssembly-based)
+4. **Build in Superset** - Create production dashboards and charts
+5. **Embed everywhere** - Add dashboards to fissio-site, fissio-docs, fissio-crmi, or fissio.com
+
+### DuckDB UI Note
+Duck-UI runs DuckDB in-browser via WebAssembly. To query the seeded data:
+- Import Parquet files from `/data/` (e.g., `global_power_plants.parquet`)
+- Or use **Jupyter** which connects directly to `fissio.duckdb`
 
 ## Sample Notebooks
 
