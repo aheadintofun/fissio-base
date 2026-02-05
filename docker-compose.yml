@@ -67,15 +67,14 @@ services:
       "
     restart: "no"
 
-  # Duck-UI - DuckDB web interface
+  # Duck-UI - DuckDB web interface (WebAssembly-based)
+  # Note: Import Parquet files manually via UI, or use Jupyter for database queries
   duckdb-ui:
     image: ghcr.io/ibero-data/duck-ui:latest
     ports:
       - "5522:5522"
     volumes:
       - ./data:/data
-    environment:
-      - DUCKDB_DATABASE=/data/fissio.duckdb
 
 volumes:
   superset_home:
