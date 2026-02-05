@@ -34,6 +34,7 @@ services:
     volumes:
       - ./superset:/app/superset_home
       - ./data:/app/data
+      - ./scripts:/app/scripts
       - ./superset_config.py:/app/pythonpath/superset_config.py
     environment:
       - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-fissio_secret_key_change_me}
@@ -41,6 +42,8 @@ services:
       - ADMIN_EMAIL=admin@fissio.com
       - ADMIN_PASSWORD=${SUPERSET_ADMIN_PASSWORD:-admin}
       - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
+      - PYTHONPATH=/app/superset_home/.local/lib/python3.10/site-packages
+    command: bash -c "pip install --user --no-deps duckdb duckdb-engine && /usr/bin/run-server.sh"
     depends_on:
       - superset-init
 

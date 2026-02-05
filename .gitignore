@@ -23,3 +23,6 @@ __pycache__/
 
 # OS
 .DS_Store
+superset/.cache/
+superset/.local/
+superset/.python_history
