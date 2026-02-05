@@ -7,6 +7,7 @@ Part of the **Fissio Platform** for nuclear site development:
 - **fissio-docs** (port 8001/3000) - Document intelligence & RAG
 - **fissio-crmi** (port 3001) - CRM for nuclear operations
 - **fissio-base** (port 8080) - Analytics & embeddable dashboards ← *this repo*
+- **fissio-mgmt** (port 8082) - Project management (OpenProject)
 
 ## Quick Start
 
@@ -163,6 +164,9 @@ cd ~/fissio-crmi && make up
 
 # Terminal 4: Analytics & Dashboards
 cd ~/fissio-base && make up
+
+# Terminal 5: Project Management
+cd ~/fissio-mgmt && make up
 ```
 
 ### Port Summary
@@ -177,6 +181,7 @@ cd ~/fissio-base && make up
 | └─ Jupyter | 8888 | http://localhost:8888 |
 | └─ Superset | 8088 | http://localhost:8088 |
 | └─ DuckDB UI | 5522 | http://localhost:5522 |
+| fissio-mgmt | 8082 | http://localhost:8082 |
 
 ## Tech Stack
 
